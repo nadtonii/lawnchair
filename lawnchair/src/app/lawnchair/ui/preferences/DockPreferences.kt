@@ -1,5 +1,5 @@
 /*
- * Copyright 2021, Lawnchair
+ * Copyright 2022, Lawnchair
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.components.*
 import com.android.launcher3.R
 
@@ -34,32 +35,39 @@ fun NavGraphBuilder.dockGraph(route: String) {
 @Composable
 fun DockPreferences() {
     val prefs = preferenceManager()
+    val prefs2 = preferenceManager2()
     PreferenceLayout(label = stringResource(id = R.string.dock_label)) {
         PreferenceGroup(
             isFirstChild = true,
-            heading = stringResource(id = R.string.search_bar_label)
+            heading = stringResource(id = R.string.search_bar_label),
         ) {
-            val enableHotseatQsbAdapter = prefs.enableHotseatQsb.getAdapter()
+            val hotseatQsbAdapter = prefs2.hotseatQsb.getAdapter()
             SwitchPreference(
-                adapter = enableHotseatQsbAdapter,
+                adapter = hotseatQsbAdapter,
                 label = stringResource(id = R.string.hotseat_qsb_label),
             )
             AnimatedVisibility(
-                visible = enableHotseatQsbAdapter.state.value,
+                visible = hotseatQsbAdapter.state.value,
                 enter = expandVertically() + fadeIn(),
-                exit = shrinkVertically() + fadeOut()
+                exit = shrinkVertically() + fadeOut(),
             ) {
                 DividerColumn {
                     SwitchPreference(
+                        adapter = prefs2.themedHotseatQsb.getAdapter(),
                         label = stringResource(id = R.string.apply_accent_color_label),
-                        adapter = prefs.themedHotseatQsb.getAdapter(),
                     )
                     SliderPreference(
                         label = stringResource(id = R.string.corner_radius_label),
                         adapter = prefs.hotseatQsbCornerRadius.getAdapter(),
                         step = 0.1F,
                         valueRange = 0F..1F,
-                        showAsPercentage = true
+                        showAsPercentage = true,
+                    )
+                    QsbProviderPreference()
+                    SwitchPreference(
+                        adapter = prefs2.hotseatQsbForceWebsite.getAdapter(),
+                        label = stringResource(R.string.always_open_website_label),
+                        description = stringResource(R.string.always_open_website_description),
                     )
                 }
             }

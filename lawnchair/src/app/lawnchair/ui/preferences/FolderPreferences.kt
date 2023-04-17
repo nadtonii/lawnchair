@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SliderPreference
@@ -37,10 +38,14 @@ fun NavGraphBuilder.folderGraph(route: String) {
 fun FolderPreferences() {
     PreferenceLayout(label = stringResource(id = R.string.folders_label)) {
         val prefs = preferenceManager()
-        PreferenceGroup(heading = stringResource(id = R.string.general_label), isFirstChild = true) {
+        val prefs2 = preferenceManager2()
+        PreferenceGroup(
+            heading = stringResource(id = R.string.general_label),
+            isFirstChild = true
+        ) {
             SliderPreference(
                 label = stringResource(id = R.string.folder_preview_bg_opacity_label),
-                adapter = prefs.folderPreviewBgOpacity.getAdapter(),
+                adapter = prefs2.folderPreviewBackgroundOpacity.getAdapter(),
                 step = 0.1F,
                 valueRange = 0F..1F,
                 showAsPercentage = true,
@@ -49,7 +54,7 @@ fun FolderPreferences() {
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {
             SliderPreference(
                 label = stringResource(id = R.string.max_folder_columns),
-                adapter = prefs.folderColumns.getAdapter(),
+                adapter = prefs2.folderColumns.getAdapter(),
                 step = 1,
                 valueRange = 2..5,
             )

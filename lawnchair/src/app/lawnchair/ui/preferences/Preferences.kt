@@ -29,12 +29,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import app.lawnchair.ui.preferences.about.aboutGraph
 import app.lawnchair.ui.preferences.components.SystemUi
+import app.lawnchair.ui.util.ProvideBottomSheetHandler
 import app.lawnchair.ui.util.portal.ProvidePortalNode
 import app.lawnchair.util.ProvideLifecycleState
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import soup.compose.material.motion.materialSharedAxisX
-import soup.compose.material.motion.rememberSlideDistance
 
 object Routes {
     const val GENERAL: String = "general"
@@ -47,6 +47,8 @@ object Routes {
     const val FONT_SELECTION: String = "fontSelection"
     const val DEBUG_MENU: String = "debugMenu"
     const val SELECT_ICON: String = "selectIcon"
+    const val ICON_PICKER: String = "iconPicker"
+    const val EXPERIMENTAL_FEATURES: String = "experimentalFeatures"
 }
 
 val LocalNavController = staticCompositionLocalOf<NavController> {
@@ -76,10 +78,10 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
                 AnimatedNavHost(
                     navController = navController,
                     startDestination = "/",
-                    enterTransition = { _, _ -> motionSpec.enter.transition(!isRtl, density) },
-                    exitTransition = { _, _ -> motionSpec.exit.transition(!isRtl, density) },
-                    popEnterTransition = { _, _ -> motionSpec.enter.transition(isRtl, density) },
-                    popExitTransition = { _, _ -> motionSpec.exit.transition(isRtl, density) },
+                    enterTransition = { motionSpec.enter.transition(!isRtl, density) },
+                    exitTransition = { motionSpec.exit.transition(!isRtl, density) },
+                    popEnterTransition = { motionSpec.enter.transition(isRtl, density) },
+                    popExitTransition = { motionSpec.exit.transition(isRtl, density) },
                 ) {
                     preferenceGraph(route = "/", { PreferencesDashboard() }) { subRoute ->
                         generalGraph(route = subRoute(Routes.GENERAL))
@@ -92,6 +94,8 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
                         fontSelectionGraph(route = subRoute(Routes.FONT_SELECTION))
                         debugMenuGraph(route = subRoute(Routes.DEBUG_MENU))
                         selectIconGraph(route = subRoute(Routes.SELECT_ICON))
+                        iconPickerGraph(route = subRoute(Routes.ICON_PICKER))
+                        experimentalFeaturesGraph(route = subRoute(Routes.EXPERIMENTAL_FEATURES))
                     }
                 }
             }
@@ -99,11 +103,16 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
     }
 }
 
+@ExperimentalMaterialApi
 @Composable
-private fun Providers(content: @Composable () -> Unit) {
+private fun Providers(
+    content: @Composable () -> Unit
+) {
     ProvidePortalNode {
         ProvideLifecycleState {
-            content()
+            ProvideBottomSheetHandler {
+                content()
+            }
         }
     }
 }

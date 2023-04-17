@@ -113,7 +113,7 @@
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
     <string name="show_sys_ui_scrim">Top Shadow</string>
-    <string name="show_status_bar">Status Bar</string>
+    <string name="show_status_bar">Show Status Bar</string>
     <string name="what_to_show">What to Show</string>
     <string name="missing_notification_access_label">Notification Access Needed</string>
     <string name="missing_notification_access_description">Notification access needed.</string>
@@ -151,8 +151,13 @@
     <string name="icon_shape_label">Icon Shape</string>
     <string name="icon_shape_system">System</string>
     <string name="icon_shape_circle">Circle</string>
+    <string name="icon_shape_square">Square</string>
     <string name="icon_shape_rounded_square">Rounded Square</string>
     <string name="icon_shape_squircle">Squircle</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_teardrop">Teardrop</string>
+    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_cupertino">Cupertino</string>
 
     <string name="customize_button_text">Customize</string>
     <string name="app_title_label">Title</string>
@@ -197,4 +202,25 @@
     <string name="search_pref_result_tips_title">Pixel Tips</string>
     <string name="row_height_label">Row Height</string>
     <string name="all_apps_device_search_hint">Search</string>
+    <string name="dark_status_bar_label">Dark Status Bar</string>
+    <string name="lawnicons_not_installed_description">Lawnicons not installed.</string>
+    <string name="icon_picker_default_category">Icons</string>
+    <string name="icon_picker_reset_to_default">Reset to Default</string>
+    <string name="icon_pack_external_picker">Open External Picker</string>
+    <string name="recents_actions_label">Quick Actions</string>
+    <string name="recents_clear_all">Clear All</string>
+    <string name="pick_icon_from_label">Pick Icon From</string>
+    <string name="experimental_features_label">Experimental Features</string>
+    <string name="icon_picker_label">Per-App Icon Customization</string>
+    <string name="icon_picker_description">May cause Lawnchair to freeze.</string>
+    <string name="font_picker_label">Font Customization</string>
+    <string name="font_picker_description">Some text remains unchanged.</string>
+    <string name="search_provider_app_search">App Search</string>
+    <string name="search_provider_google" translatable="false">Google</string>
+    <string name="search_provider_google_go" translatable="false">Google Go</string>
+    <string name="search_provider_duckduckgo" translatable="false">DuckDuckGo</string>
+    <string name="always_open_website_label">Always Open Website</string>
+    <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
+    <string name="search_provider">Search Provider</string>
+    <string name="status_bar_label">Status Bar</string>
 </resources>

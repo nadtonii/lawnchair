@@ -24,6 +24,7 @@ import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.not
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.search.LawnchairSearchAlgorithm
 import app.lawnchair.ui.preferences.components.*
 import com.android.launcher3.R
@@ -43,12 +44,14 @@ fun NavGraphBuilder.appDrawerGraph(route: String) {
 @Composable
 fun AppDrawerPreferences() {
     val prefs = preferenceManager()
+    val prefs2 = preferenceManager2()
     val resources = LocalContext.current.resources
     PreferenceLayout(label = stringResource(id = R.string.app_drawer_label)) {
         PreferenceGroup(heading = stringResource(id = R.string.general_label), isFirstChild = true) {
+            val hiddenApps = prefs2.hiddenApps.getAdapter().state.value
             NavigationActionPreference(
                 label = stringResource(id = R.string.hidden_apps_label),
-                subtitle = resources.getQuantityString(R.plurals.apps_count, hiddenAppsCount(), hiddenAppsCount()),
+                subtitle = resources.getQuantityString(R.plurals.apps_count, hiddenApps.size, hiddenApps.size),
                 destination = subRoute(name = AppDrawerRoutes.HIDDEN_APPS),
             )
             SliderPreference(
@@ -61,25 +64,25 @@ fun AppDrawerPreferences() {
             SuggestionsPreference()
         }
         val deviceSearchEnabled = LawnchairSearchAlgorithm.isDeviceSearchEnabled(LocalContext.current)
-        val showSearchBar = !prefs.hideAppSearchBar.getAdapter()
+        val showDrawerSearchBar = !prefs2.hideAppDrawerSearchBar.getAdapter()
         PreferenceGroup(heading = stringResource(id = R.string.pref_category_search)) {
             SwitchPreference(
                 label = stringResource(id = R.string.show_app_search_bar),
-                adapter = showSearchBar
+                adapter = showDrawerSearchBar,
             )
             AnimatedVisibility(
-                visible = showSearchBar.state.value,
+                visible = showDrawerSearchBar.state.value,
                 enter = expandVertically() + fadeIn(),
                 exit = shrinkVertically() + fadeOut()
             ) {
                 DividerColumn {
                     SwitchPreference(
-                        adapter = prefs.searchAutoShowKeyboard.getAdapter(),
+                        adapter = prefs2.autoShowKeyboardInDrawer.getAdapter(),
                         label = stringResource(id = R.string.pref_search_auto_show_keyboard),
                     )
                     if (!deviceSearchEnabled) {
                         SwitchPreference(
-                            adapter = prefs.useFuzzySearch.getAdapter(),
+                            adapter = prefs2.enableFuzzySearch.getAdapter(),
                             label = stringResource(id = R.string.fuzzy_search_title),
                             description = stringResource(id = R.string.fuzzy_search_desc)
                         )
@@ -89,7 +92,7 @@ fun AppDrawerPreferences() {
         }
         if (deviceSearchEnabled) {
             AnimatedVisibility(
-                visible = showSearchBar.state.value,
+                visible = showDrawerSearchBar.state.value,
                 enter = expandVertically() + fadeIn(),
                 exit = shrinkVertically() + fadeOut()
             ) {
@@ -112,13 +115,13 @@ fun AppDrawerPreferences() {
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {
             SliderPreference(
                 label = stringResource(id = R.string.app_drawer_columns),
-                adapter = prefs.allAppsColumns.getAdapter(),
+                adapter = prefs2.drawerColumns.getAdapter(),
                 step = 1,
                 valueRange = 3..10,
             )
             SliderPreference(
+                adapter = prefs2.drawerCellHeightFactor.getAdapter(),
                 label = stringResource(id = R.string.row_height_label),
-                adapter = prefs.allAppsCellHeightMultiplier.getAdapter(),
                 valueRange = 0.7F..1.5F,
                 step = 0.1F,
                 showAsPercentage = true
@@ -127,24 +130,24 @@ fun AppDrawerPreferences() {
         PreferenceGroup(heading = stringResource(id = R.string.icons)) {
             SliderPreference(
                 label = stringResource(id = R.string.icon_size),
-                adapter = prefs.allAppsIconSizeFactor.getAdapter(),
+                adapter = prefs2.drawerIconSizeFactor.getAdapter(),
                 step = 0.1f,
                 valueRange = 0.5F..1.5F,
                 showAsPercentage = true,
             )
-            val allAppsIconLabels = prefs.allAppsIconLabels.getAdapter()
+            val showDrawerLabels = prefs2.showIconLabelsInDrawer.getAdapter()
             SwitchPreference(
-                allAppsIconLabels,
+                adapter = showDrawerLabels,
                 label = stringResource(id = R.string.show_home_labels),
             )
             AnimatedVisibility(
-                visible = allAppsIconLabels.state.value,
+                visible = showDrawerLabels.state.value,
                 enter = expandVertically() + fadeIn(),
                 exit = shrinkVertically() + fadeOut()
             ) {
                 SliderPreference(
                     label = stringResource(id = R.string.label_size),
-                    adapter = prefs.allAppsTextSizeFactor.getAdapter(),
+                    adapter = prefs2.drawerIconLabelSizeFactor.getAdapter(),
                     step = 0.1F,
                     valueRange = 0.5F..1.5F,
                     showAsPercentage = true,

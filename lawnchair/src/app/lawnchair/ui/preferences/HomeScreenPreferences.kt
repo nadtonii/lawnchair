@@ -1,5 +1,5 @@
 /*
- * Copyright 2021, Lawnchair
+ * Copyright 2022, Lawnchair
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import androidx.navigation.NavGraphBuilder
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.components.*
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -43,8 +44,12 @@ fun NavGraphBuilder.homeScreenGraph(route: String) {
 @Composable
 fun HomeScreenPreferences() {
     val prefs = preferenceManager()
+    val prefs2 = preferenceManager2()
     PreferenceLayout(label = stringResource(id = R.string.home_screen_label)) {
-        PreferenceGroup(heading = stringResource(id = R.string.general_label), isFirstChild = true) {
+        PreferenceGroup(
+            heading = stringResource(id = R.string.general_label),
+            isFirstChild = true,
+        ) {
             SwitchPreference(
                 prefs.addIconToHome.getAdapter(),
                 label = stringResource(id = R.string.auto_add_shortcuts_label),
@@ -54,7 +59,7 @@ fun HomeScreenPreferences() {
                 label = stringResource(id = R.string.wallpaper_scrolling_label),
             )
             SwitchPreference(
-                prefs.workspaceDt2s.getAdapter(),
+                adapter = prefs2.dt2s.getAdapter(),
                 label = stringResource(id = R.string.workspace_dt2s),
             )
             val columns by prefs.workspaceColumns.getAdapter()
@@ -62,51 +67,64 @@ fun HomeScreenPreferences() {
             NavigationActionPreference(
                 label = stringResource(id = R.string.home_screen_grid),
                 destination = subRoute(name = HomeScreenRoutes.GRID),
-                subtitle = stringResource(id = R.string.x_by_y, columns, rows)
+                subtitle = stringResource(id = R.string.x_by_y, columns, rows),
             )
+        }
+        PreferenceGroup(heading = stringResource(id = R.string.status_bar_label)) {
+            val showStatusBarAdapter = prefs2.showStatusBar.getAdapter()
+            SwitchPreference(
+                adapter = showStatusBarAdapter,
+                label = stringResource(id = R.string.show_status_bar),
+            )
+            AnimatedVisibility(
+                visible = showStatusBarAdapter.state.value,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut(),
+            ) {
+                SwitchPreference(
+                    adapter = prefs2.darkStatusBar.getAdapter(),
+                    label = stringResource(id = R.string.dark_status_bar_label),
+                )
+            }
         }
         PreferenceGroup(heading = stringResource(id = R.string.what_to_show)) {
             val feedAvailable = OverlayCallbackImpl.minusOneAvailable(LocalContext.current)
             SwitchPreference(
-                prefs.minusOneEnable.getAdapter(),
+                adapter = prefs2.enableFeed.getAdapter(),
                 label = stringResource(id = R.string.minus_one_enable),
                 description = if (feedAvailable) null else stringResource(id = R.string.minus_one_unavailable),
                 enabled = feedAvailable,
             )
             SwitchPreference(
-                prefs.smartSpaceEnable.getAdapter(),
-                label = stringResource(id = R.string.smart_space_enable)
+                adapter = prefs2.enableSmartspace.getAdapter(),
+                label = stringResource(id = R.string.smart_space_enable),
             )
             SwitchPreference(
-                prefs.showStatusBar.getAdapter(),
-                label = stringResource(id = R.string.show_status_bar),
-            )
-            SwitchPreference(
-                prefs.showSysUiScrim.getAdapter(),
+                adapter = prefs2.showTopShadow.getAdapter(),
                 label = stringResource(id = R.string.show_sys_ui_scrim),
             )
         }
         PreferenceGroup(heading = stringResource(id = R.string.icons)) {
             SliderPreference(
                 label = stringResource(id = R.string.icon_size),
-                adapter = prefs.iconSizeFactor.getAdapter(),
+                adapter = prefs2.homeIconSizeFactor.getAdapter(),
                 step = 0.1f,
                 valueRange = 0.5F..1.5F,
                 showAsPercentage = true,
             )
-            val showHomeLabels = prefs.showHomeLabels.getAdapter()
+            val homeScreenLabelsAdapter = prefs2.showIconLabelsOnHomeScreen.getAdapter()
             SwitchPreference(
-                showHomeLabels,
+                adapter = homeScreenLabelsAdapter,
                 label = stringResource(id = R.string.show_home_labels),
             )
             AnimatedVisibility(
-                visible = showHomeLabels.state.value,
+                visible = homeScreenLabelsAdapter.state.value,
                 enter = expandVertically() + fadeIn(),
-                exit = shrinkVertically() + fadeOut()
+                exit = shrinkVertically() + fadeOut(),
             ) {
                 SliderPreference(
                     label = stringResource(id = R.string.label_size),
-                    adapter = prefs.textSizeFactor.getAdapter(),
+                    adapter = prefs2.homeIconLabelSizeFactor.getAdapter(),
                     step = 0.1f,
                     valueRange = 0.5F..1.5F,
                     showAsPercentage = true,
@@ -116,8 +134,8 @@ fun HomeScreenPreferences() {
         if (!Utilities.ATLEAST_S) {
             PreferenceGroup(heading = stringResource(id = R.string.widget_button_text)) {
                 SwitchPreference(
-                    adapter = prefs.roundedWidgets.getAdapter(),
-                    label = stringResource(id = R.string.force_rounded_widgets)
+                    adapter = prefs2.roundedWidgets.getAdapter(),
+                    label = stringResource(id = R.string.force_rounded_widgets),
                 )
             }
         }

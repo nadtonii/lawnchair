@@ -14,7 +14,8 @@ class LawnchairScrimView(context: Context, attrs: AttributeSet?) : ScrimView(con
     private var drawerOpacity = 0f
 
     init {
-        PreferenceManager.getInstance(context).drawerOpacity.subscribeValues(this) {
+        val pm = PreferenceManager.getInstance(context)
+        pm.drawerOpacity.subscribeValues(this) {
             drawerOpacity = it
         }
     }
